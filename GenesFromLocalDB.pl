@@ -39,7 +39,7 @@ use Bio::SearchIO;
 $dep1 = "blastx";
 unless (defined(which($dep1))) {print $dep1, " not found. Exiting.\n"; exit;}
 
-# -- hard coded settings
+# -- hard coded default settings
 my $nprog = "tblastx";
 my $pprog = "blastx";
 my $hno = 20;			# number of hits to consider
@@ -59,7 +59,7 @@ foreach $argi (0 .. $#ARGV)
 	if ($flag[0] eq "-a") {$def = $flag[1]}
 	if ($flag[0] eq "-t") {$tno = $flag[1]}
 	if ($flag[0] eq "-e") {$crit = $flag[1]}
-	if ($flag[0] eq "-o") {$outdir = $flag[1]}
+	if ($flag[0] eq "-o") {$outopt = $flag[1]}
 	}
 
 my $qseq = new Bio::SeqIO (-file=>$qfil, -format=>'fasta');
@@ -101,14 +101,16 @@ if ($outopt =~ /y/)
 	{
 	@chars = ("A".."Z", "a".."z");
 	$string .= $chars[rand @chars] for 1..8;
+	print "Writing blast report to temporary directory /data/$string\n";
 	system("mkdir /data/$string");
 	system("$prog -db $db -query $qfil -evalue $eset -num_descriptions $hno -num_alignments $hno -out /data/$string/out.br -num_threads $tno");
-	system("blastall -d $db -p blastx -a 4 -e $crit -v $hno -b $hno -i $qfile -o /data/$string/blast.br");
 	system("cp /data/$string/out.br .");
 	system("rm -rf /data/$string");
+	print "Moving blast report to ./out.br\n";
 	}
 elsif ($outopt =~ /n/)
 	{
+	print "Writing blast report to ./out.br\n";
 	system("$prog -db $db -query $qfil -evalue $eset -num_descriptions $hno -num_alignments $hno -out out.br -num_threads $tno");
 	}
 system("date");
@@ -116,7 +118,7 @@ print "Finished blasting ".$db.".\n\n";
 
 # -- parse out top hits for each query and identify the gene name for that hit
 print "Parsing blast report from ".$db."...\n";
-my $br = new Bio::SearchIO (-file=>"$outdir/out.br", format=>'blast');
+my $br = new Bio::SearchIO (-file=>"out.br", format=>'blast');
 RESULTS: while (my $result = $br->next_result)
 	{$qid = $result->query_accession;
 	$hcount = 0; 
