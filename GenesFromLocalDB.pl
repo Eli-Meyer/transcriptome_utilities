@@ -202,7 +202,6 @@ print "\n";
 system("rm tq.fasta");
 #system("rm tqi.fasta");
 
-system("cp $outdir/out.br .");
 system("date");
 print "\n";
 
