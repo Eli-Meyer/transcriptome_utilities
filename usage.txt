@@ -86,6 +86,35 @@ Arguments:
 	 output		a name for the output file
 
 -------------------------
+OHR_hits.pl
+-------------------------
+
+------------------------------------------------------------
+OHR_hits.pl
+Calculates ortholog hit ratios based on the sum of Hsp lengths
+Output:  tab delimited text: sequence, OHR.
+Usage:    OHR_hits.pl blast_report threshold
+Arguments:
+         blast_report    blast report from BLASTX against gene models
+         threshold       minimum bit score
+------------------------------------------------------------
+
+-------------------------
+OHR_orf.pl
+-------------------------
+
+------------------------------------------------------------
+OHR_orf.pl
+Calculates ortholog hit ratios based on longest ORF in BLAST frame
+Output:  tab delimited text: sequence, OHR.
+Usage: OHR_orf.pl blast_report threshold sequences
+Arguments:
+         blast_report    blast report from BLASTX against gene models
+         threshold       minimum bit score
+         sequences       fasta file of nucleotide sequence (BLAST queries)
+------------------------------------------------------------
+
+-------------------------
 RecipBestMatch_UniProt.pl
 -------------------------
 
