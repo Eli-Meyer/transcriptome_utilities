@@ -172,6 +172,35 @@ Usage: TaxaOriginByBlast.pl query db db_dir threshold level blastopt
 			"no"= write to working directory (choose this option on most systems)
 
 -------------------------
+translate_by_blast.pl
+-------------------------
+
+------------------------------------------------------------
+translate_by_blast.pl
+Translates a series of transcript sequences (DNA) into proteins
+in the frame determined from blast matches in a user-specified database.
+Output: a fasta file containing the longest ORF for each transcript.
+Usage: translate_by_blast.pl database queries threshold
+Where:
+        database:       protein sequences, whether already formatted for BLAST or not.
+        queries:        nucleotide sequences of transcripts to be translated.
+        threshold:      minimum bit-score required to count a hit as significant.
+------------------------------------------------------------
+
+-------------------------
+trinity_reps.pl
+-------------------------
+
+Selects the longest representative for each component or
+subcomponent in a Trinity transcriptome assembly.
+Usage: trinity_reps.pl assembly.fasta option output.tab output.fasta
+Where:
+	assembly.fasta:	the input file, assembled by Trinity
+	option:		c for component, or s for subcomponent
+	output.tab:	a name for the output summary file
+	output.fasta:	a name for the output file of representative transcripts
+
+-------------------------
 GetGeneNames.sh
 -------------------------
 
