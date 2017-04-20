@@ -6,9 +6,13 @@
 $scriptname=$0; $scriptname =~ s/.+\///g;
 $usage = <<USAGE;
 Identifies most likely origin of each sequence by comparing against a
-protein sequence database from a single close relative, and a protein database
-from a likely comtaminants. e.g. for corals, A. digitifera would be a
+nucleotide sequence database from a single close relative, and a database
+of likely comtaminants. e.g. for corals, A. digitifera would be a
 good choice for a close relative, and Symbiodinium would be a likely contaminant.
+
+Please note that since this is a nucleotide comparison, this approach is only reasonable
+if you have sequence information for extremely close relatives (preferably the same species)
+for both the target and contaminant. 
 
 Each sequence is assigned to the source which it matches best, or to neither
 if it matches neither database.
@@ -17,8 +21,8 @@ Usage: $scriptname -q queries -s score -t target_db -c contam_db
 Required arguments:
         queries:	FASTA-formatted file of DNA sequences (e.g. transcripts)
         score:		bit-score threshold (matches this high or higher count as a match)
-        target_db:	BLAST-formatted protein database of a closely related species
-        contam_db:	BLAST-formatted protein database of an expected contaminant
+        target_db:	BLAST-formatted nucleotide database of a closely related species
+        contam_db:	BLAST-formatted nucleotide database of an expected contaminant
 USAGE
 
 # -- module and executable dependencies
@@ -38,7 +42,7 @@ unless(eval("require $mod1")) {print "$mod1 not found. Exiting\n"; exit;}
 use Bio::SeqIO;;
 
 # use this block and edit to check for executables required by the script
-$dep1 = "blastx";
+$dep1 = "blastn";
 unless (defined(which($dep1))) {print $dep1, " not found. Exiting.\n"; exit;}
 
 # get variables from input
@@ -69,7 +73,7 @@ foreach $d (@dba)
 	$ofni = $ofn;
 	$ofn =~ s/\.[a-z]+$//g;
 	$ofn = "$ofn.br";
-	system("blastx -db $d -query $qfile -out $ofn -num_descriptions $hno -num_alignments $hno -num_threads $cpu");
+	system("blastn -db $d -query $qfile -out $ofn -num_descriptions $hno -num_alignments $hno -num_threads $cpu");
 #	system("mv $d.br .");
 	print "Done.\n";
 
@@ -119,11 +123,11 @@ foreach $qs (sort(keys(%hh)))
 		}
 	if ($constat == 0) {$idh{$qs} = "target";}
 	else {$idh{$qs} = $conid;}
-#	print $qs, "\t", "@sda", "\t", $constat, "\t", $idh{$qs}, "\n";
+	print $qs, "\t", "@sda", "\t", $constat, "\t", $idh{$qs}, "\n";
+
 	}
 
 # write out sequences and summary output to the appropriate files
-$tarcount = $concount = $unkcount = 0;
 $inseq = new Bio::SeqIO(-file=>$qfile, -format=>"fasta");
 while ($seq = $inseq->next_seq)
 	{
